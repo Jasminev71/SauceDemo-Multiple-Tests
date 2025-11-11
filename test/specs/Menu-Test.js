@@ -1,8 +1,9 @@
-import { $, browser, expect } from '@wdio/globals';
+import { browser } from '@wdio/globals';
 import InventoryPage from '../pageobjects/inventory-page.js';
 import LoginPage from '../pageobjects/login.page.js';
 import MenuPage from '../pageobjects/menu.js';
 import CartPage from '../pageobjects/Cart.js';
+
 
 
 
@@ -23,9 +24,10 @@ describe('Full coverage Testing of hamburger menu', async () => {
         await InventoryPage.waitLoaded();
     })
   
-    it('the cart can be opened', async () => {
-       await CartPage.openCart();
-       await expect(CartPage.container).toBeDisplayed();
+    it('the cart can be opened when menu is open', async () => {
+        await MenuPage.menuOpen();
+        await CartPage.openCart();
+        await CartPage.cartIsOpen();
    })
    
     it('Users can logout using link on menu', async () => {
@@ -36,19 +38,12 @@ describe('Full coverage Testing of hamburger menu', async () => {
          it('About Page is usable', async () => {
            await MenuPage.getAbout();
            await browser.back();
-           await expect(InventoryPage.container).toBeDisplayed();
+           await InventoryPage.assertLoaded();
        })
    
      it('Reset App will reset page', async() => {
          await InventoryPage.addAllToCart();
-         await expect(InventoryPage.cartBadge).toBeDisplayed();
-         const badgeTextBefore = await InventoryPage.cartBadge.getText();
-         await expect(badgeTextBefore).toBe('6');
-        
-         await MenuPage.getReset();
-        
-         await InventoryPage.waitLoaded();
-         await expect(InventoryPage.cartBadge).not.toBeExisting();
+         await MenuPage.itemsAddedMenuReset();
      })
      
      it('Esc closes the menu', async () => {
@@ -77,7 +72,6 @@ describe('Full coverage Testing of hamburger menu', async () => {
      it('Menu Reset closes menu and resets state', async () => {
          await InventoryPage.addAllToCart();
          await MenuPage.getReset();
-         await browser.refresh();
          await InventoryPage.waitLoaded();
          await InventoryPage.assertBadgeCount(0);
      })
@@ -91,10 +85,7 @@ describe('Full coverage Testing of hamburger menu', async () => {
 
     it('Menu items accessible only when menu is open', async () => {
         await MenuPage.menuOpen();
-        await expect(MenuPage.itemsBtn).toBeDisplayed();
-        await expect(MenuPage.aboutBtn).toBeDisplayed();
-        await expect(MenuPage.logoutBtn).toBeDisplayed();
-        await expect(MenuPage.resetBtn).toBeDisplayed();
+        await MenuPage.menuDisplayLinks();
         await MenuPage.menuClose();
     })
 })
@@ -112,21 +103,12 @@ describe('Full coverage Testing of hamburger menu', async () => {
  
 
      it('Menu items should not be clickable when menu is closed', async () => {
-        await expect(MenuPage.itemsBtn).not.toBeDisplayed();
-        await expect(MenuPage.aboutBtn).not.toBeDisplayed();
-        await expect(MenuPage.logoutBtn).not.toBeDisplayed();
-        await expect(MenuPage.resetBtn).not.toBeDisplayed();
+        await MenuPage.noMenuDisplayLinks();
     });
 
    
      it('Close button should not be visible when menu is closed', async () => {
-        await browser.pause(300);
-       if (await MenuPage.menuOpen()) {
-             await MenuPage.menuClose();
-         }
-        await browser.pause(500);
-        await MenuPage.menuClose();
-        await expect(MenuPage.closeBtn).not.toBeDisplayed();
+        await MenuPage.closeButtonNotVisible();
      })
 
 
@@ -149,8 +131,7 @@ describe('Full coverage Testing of hamburger menu', async () => {
 
  describe('Login +  menu', async () => {
     it('Menu is not usable before login', async () => {
-        await LoginPage.open();
-      await expect($('#react-burger-menu-btn')).not.toBeExisting();
+        await MenuPage.LoginMenu();
      });
     
  });

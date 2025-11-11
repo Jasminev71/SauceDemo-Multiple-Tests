@@ -1,7 +1,8 @@
-// ./test/pageobjects/menu.js
-// ./test/pageobjects/menu.js
+
 import { $, browser, expect } from '@wdio/globals';
 import Page from './page.js';
+import LoginPage from './login.page.js';
+import InventoryPage from './inventory-page.js';
 
 
 
@@ -47,6 +48,42 @@ class MenuPage extends Page {
   async getAllItems() {
     await this.menuOpen();
     await this.itemsBtn.click();
+  }
+  async menuDisplayLinks() {
+        await expect(this.itemsBtn).toBeDisplayed();
+        await expect(this.aboutBtn).toBeDisplayed();
+        await expect(this.logoutBtn).toBeDisplayed();
+        await expect(this.resetBtn).toBeDisplayed();
+  }
+  async noMenuDisplayLinks() {
+        await expect(this.itemsBtn).not.toBeDisplayed();
+        await expect(this.aboutBtn).not.toBeDisplayed();
+        await expect(this.logoutBtn).not.toBeDisplayed();
+        await expect(this.resetBtn).not.toBeDisplayed();
+  }
+  async closeButtonNotVisible() {
+    try {
+      const isDisplayed = await this.closeBtn.isDisplayed();
+      if (isDisplayed) {
+        await this.menuClose();
+      }
+    } catch (error) {
+    }
+    await expect(this.closeBtn).not.toBeDisplayed();
+  }
+  async LoginMenu() {
+  await LoginPage.open();
+        await expect($('#react-burger-menu-btn')).not.toBeExisting();
+  }
+  async itemsAddedMenuReset() {
+    await expect(InventoryPage.cartBadge).toBeDisplayed();
+             const badgeTextBefore = await InventoryPage.cartBadge.getText();
+             await expect(badgeTextBefore).toBe('6');
+             
+             await this.getReset();
+             
+             await InventoryPage.waitLoaded();
+             await expect(InventoryPage.cartBadge).not.toBeExisting();
   }
 }
 

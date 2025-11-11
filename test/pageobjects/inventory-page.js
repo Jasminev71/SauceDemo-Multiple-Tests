@@ -1,4 +1,4 @@
-import { $, $$, expect } from '@wdio/globals';
+import { $, $$, expect, browser } from '@wdio/globals';
 import Page from './page.js';
 
 class InventoryPage extends Page {
@@ -70,16 +70,18 @@ async assertBackpackButtonIsAdd() {
 }
 
  
-async addOneItem(id) {
-  const addBtn = $(`#add-to-cart-${id}`);
-  const removeBtn = $(`#remove-${id}`);
+async addOneItem(ids) {
+  await this.waitLoaded();
+  for (const id of ids) {
+    const addBtn = $(`#add-to-cart-${id}`);
+    const removeBtn = $(`#remove-${id}`);
 
+    if (await removeBtn.isExisting()) continue;
 
-  if (await removeBtn.isExisting()) return;
-
-  await addBtn.scrollIntoView();
-  await addBtn.waitForClickable({ timeout: 5000 });
-  await addBtn.click();
+    await addBtn.scrollIntoView();
+    await addBtn.waitForClickable({ timeout: 5000 });
+    await addBtn.click();
+  }
 }
 
 

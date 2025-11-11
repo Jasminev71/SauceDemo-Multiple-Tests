@@ -46,7 +46,7 @@ async checkout() {
                 await btn.click(); }
     }
    async removeOneItem(itemsId) {
-  await this.openCart();
+   await this.openCart();
   for (const id of itemsId) {
     const removeBtn = await $(`#remove-${id}`);
     await removeBtn.waitForClickable();
@@ -86,6 +86,10 @@ async isCheckoutButtonEnabled() {
     }
 }
 
+async cartIsOpen() {
+    await expect(this.container).toBeDisplayed();
 }
-export default new CartPage();  
+
+}
+export default new CartPage(); 
     
