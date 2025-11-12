@@ -6,6 +6,7 @@ import InventoryPage from './inventory-page.js';
 
 
 
+
 class MenuPage extends Page {
   get menuBtn()   { return $('#react-burger-menu-btn'); }
   get closeBtn()  { return $('#react-burger-cross-btn'); }

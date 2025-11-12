@@ -1,5 +1,8 @@
 import { $, $$, expect } from '@wdio/globals';
 import Page from './page.js';
+import MenuPage from '../pageobjects/menu.js';
+import LoginPage from '../pageobjects/login.page.js';
+import InventoryPage from '../pageobjects/inventory-page.js';
 
 
 
@@ -77,19 +80,33 @@ async removeAllTwiceAndAssertEmpty() {
   await this.assertCartEmpty()
 }
 
-async isCheckoutButtonEnabled() {
-    try {
-        await this.checkoutBtn.waitForEnabled({ timeout: 2000 });
-        return true;
-    } catch {
-        return false;
-    }
-}
+
+
 
 async cartIsOpen() {
     await expect(this.container).toBeDisplayed();
 }
-
+async addThreeItems() {
+   await MenuPage.getReset();
+          await browser.refresh();
+          const items = [
+              'sauce-labs-backpack',
+              'sauce-labs-bike-light',
+              'sauce-labs-onesie'
+          ];
+          
+          for (const item of items) {
+              await InventoryPage.addOneItem([item]);
+          }
+          
+          await this.openCart();
+          await this.assertItemCount(3);
+}
+async userLogoutToCart() {
+  await MenuPage.userLogout();
+          await browser.url('https://www.saucedemo.com/cart.html');
+          await LoginPage.assertLoaded();
+}
 }
 export default new CartPage(); 
     

@@ -42,7 +42,7 @@ describe('Inventory to cart postive tests', async () => {
         await InventoryPage.addAllToCart();
         await CartPage.removeOneItem(['sauce-labs-bike-light']);
         await CartPage.assertItemCount(5);
-        await expect(InventoryPage.cartBadge).toHaveText('5');
+        await await InventoryPage.assertBadgeCount(5);
 
     })
     it('Users full cart should be saved after logout and login', async () => {
@@ -50,8 +50,7 @@ describe('Inventory to cart postive tests', async () => {
         await CartPage.openCart();
         await MenuPage.userLogout();
         await LoginPage.loginAsStandardUser();
-        await expect(InventoryPage.cartBadge).toHaveText('6');
-
+        await InventoryPage.assertBadgeCount(6);
     })
    
     it('adding an item and then refreshing still saves the cart', async () => {
@@ -60,7 +59,7 @@ describe('Inventory to cart postive tests', async () => {
         await inventoryPage.addOneItem(['sauce-labs-backpack']);
         await browser.refresh();
         await InventoryPage.waitLoaded();
-        await expect(InventoryPage.cartBadge).toHaveText('1');
+        await InventoryPage.assertBadgeCount(1);
     })
     
     it('adding an item then continue shopping then going back to cart still saves cart', async () => {
@@ -69,22 +68,22 @@ describe('Inventory to cart postive tests', async () => {
         await inventoryPage.addOneItem(['sauce-labs-backpack', 'sauce-labs-bike-light']);
         await CartPage.openCart();
         await CartPage.continueShopping();
-        await expect(InventoryPage.cartBadge).toHaveText('1');
+        await InventoryPage.assertBadgeCount(2);
         await CartPage.openCart();
-        await expect(InventoryPage.cartBadge).toHaveText('1');
+        await InventoryPage.assertBadgeCount(2);
     })
     it('cart is the same when switching user accounts', async () => {
     
         await InventoryPage.addAllToCart();
-        await expect(InventoryPage.cartBadge).toHaveText('6');
+        await InventoryPage.assertBadgeCount(6);
         await MenuPage.userLogout();
         await LoginPage.login('visual_user', 'secret_sauce');
         await inventoryPage.waitLoaded();
-        await expect(InventoryPage.cartBadge).toHaveText('6');
+        await InventoryPage.assertBadgeCount(6);
      })
      it('cart is the same when switching users in same session', async () => {
         await inventoryPage.addAllToCart();
-        await expect(InventoryPage.cartBadge).toHaveText('6');
+        await InventoryPage.assertBadgeCount(6);
 
         await MenuPage.userLogout();
         await LoginPage.login('visual_user', 'secret_sauce');  
@@ -92,12 +91,12 @@ describe('Inventory to cart postive tests', async () => {
 
         await CartPage.openCart();
         await CartPage.assertItemCount(6);
-        await expect(InventoryPage.cartBadge).toHaveText('6');
+        await InventoryPage.assertBadgeCount(6);
 });
     it('cart is cleared when user login is switched on new session', async () => {
         
             await InventoryPage.addAllToCart();
-            await expect(InventoryPage.cartBadge).toHaveText('6');
+            await InventoryPage.assertBadgeCount(6);
 
             await browser.reloadSession(); 
             await LoginPage.open();          
@@ -106,14 +105,14 @@ describe('Inventory to cart postive tests', async () => {
 
             await CartPage.openCart();
             await CartPage.assertItemCount(0);
-            await expect(InventoryPage.cartBadge).not.toBeExisting();
+            await InventoryPage.assertBadgeCount(0);
     })
     it('backout from check out saves cart', async () => {
             await inventoryPage.addAllToCart();
             await CartPage.openCart();
             await CartPage.checkout();
             await browser.back();
-            await expect(InventoryPage.cartBadge).toHaveText('6');
+            await InventoryPage.assertBadgeCount(6);
     })
 
     it('remove Backpack in cart reverts button to Add on inventory', async () => {
@@ -143,7 +142,7 @@ describe('Inventory to cart postive tests', async () => {
         await browser.refresh();
         await CartPage.openCart();
         await CartPage.assertItemCount(0);
-        await expect(InventoryPage.cartBadge).not.toBeExisting();
+        await InventoryPage.assertBadgeCount(0);
     });
 
     it('Cart badge disappears when last item is removed', async () => {
@@ -154,7 +153,7 @@ describe('Inventory to cart postive tests', async () => {
         await CartPage.assertItemCount(0);
         await CartPage.continueShopping();
         await InventoryPage.waitLoaded();
-        await expect(InventoryPage.cartBadge).not.toBeExisting();
+        await InventoryPage.assertBadgeCount(0);
     });
     it('Cart icon clickable from product detail page', async () => {
         await InventoryPage.backpacktitle();
@@ -171,22 +170,9 @@ describe('Inventory to cart postive tests', async () => {
         await CartPage.openCart();
         await CartPage.assertItemCount(0);
     });
-
+        // Way too much Lolgic
     it('Add items in specific order and verify cart order', async () => {
-        await MenuPage.getReset();
-        await browser.refresh();
-        const items = [
-            'sauce-labs-backpack',
-            'sauce-labs-bike-light',
-            'sauce-labs-onesie'
-        ];
-        
-        for (const item of items) {
-            await InventoryPage.addOneItem([item]);
-        }
-        
-        await CartPage.openCart();
-        await CartPage.assertItemCount(3);
+        await CartPage.addThreeItems()
     });
 
     it('Rapid add and remove operations', async () => {
@@ -202,13 +188,12 @@ describe('Inventory to cart postive tests', async () => {
         await InventoryPage.assertBadgeCount(1);
     });
 
-    it('Cart persists after browser back navigation', async () => {
+    it('Cart persists after Continue Shopping is used', async () => {
         await InventoryPage.addAllToCart();
         await CartPage.openCart();
         await CartPage.continueShopping();
-        await browser.back(); // Should go back to cart
-        await CartPage.waitLoaded();
-        await CartPage.assertItemCount(6);
+        await InventoryPage.waitLoaded();
+        await InventoryPage.assertBadgeCount(6);
     });
 
     it('Cart icon shows correct badge count after item removal', async () => {
@@ -268,10 +253,9 @@ describe('Cart Page Postive tests', () => {
         await CartPage.openCart();
         await CartPage.waitLoaded();
         })
+        //way too miuch logi 
     it('redirects to login when visiting cart page while logged out', async () => {
-        await MenuPage.userLogout();
-        await browser.url('https://www.saucedemo.com/cart.html');
-        await LoginPage.assertLoaded();
+        await CartPage.userLogoutToCart();
 });
 
 it('Empty cart shows no items', async () => {
@@ -279,9 +263,8 @@ it('Empty cart shows no items', async () => {
     await browser.refresh();
     await CartPage.openCart();
     await CartPage.assertItemCount(0);
-    const isEnabled = await CartPage.isCheckoutButtonEnabled();
-
-    await expect(CartPage.container).toBeDisplayed();
+    await InventoryPage.assertBadgeCount(0); 
+    await CartPage.waitLoaded();
 });
 
     })

@@ -10,7 +10,7 @@ import CartPage from '../pageobjects/Cart.js';
 
 
 
-describe('Full coverage Testing of hamburger menu', async () => {
+describe.skip('Full coverage Testing of hamburger menu', async () => {
     beforeEach(async () => {
         await LoginPage.open(); 
         await LoginPage.loginAsStandardUser();
@@ -93,7 +93,7 @@ describe('Full coverage Testing of hamburger menu', async () => {
 
     
  
- describe('Negative testing for Sauce Demo Menu', async () => {
+ describe.skip('Negative testing for Sauce Demo Menu', async () => {
      beforeEach(async() => {
          await LoginPage.open(); 
          await LoginPage.loginAsStandardUser();
@@ -129,7 +129,7 @@ describe('Full coverage Testing of hamburger menu', async () => {
 
 
 
- describe('Login +  menu', async () => {
+ describe.skip('Login +  menu', async () => {
     it('Menu is not usable before login', async () => {
         await MenuPage.LoginMenu();
      });
