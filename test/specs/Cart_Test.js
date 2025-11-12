@@ -5,7 +5,7 @@ import MenuPage from '../pageobjects/menu.js';
 import CartPage from '../pageobjects/Cart.js';
 import inventoryPage from '../pageobjects/inventory-page.js';
 
-describe.skip('Inventory to cart postive tests', async () => {
+describe('Inventory to cart postive tests', async () => {
     beforeEach(async () => {
             await LoginPage.open(); 
             await LoginPage.loginAsStandardUser();
@@ -235,7 +235,7 @@ describe.skip('Inventory to cart postive tests', async () => {
         });
 
 });
-describe.skip('Cart Page Postive tests', () => {
+describe('Cart Page Postive tests', () => {
     beforeEach(async () => {
         await LoginPage.open(); 
         await LoginPage.loginAsStandardUser();
@@ -260,7 +260,7 @@ describe.skip('Cart Page Postive tests', () => {
     
     });
 
-    describe.skip('Negative tests for Sauce Demo cart', async () => {
+    describe('Negative tests for Sauce Demo cart', async () => {
      beforeEach(async () => {
         await LoginPage.open(); 
         await LoginPage.loginAsStandardUser();
